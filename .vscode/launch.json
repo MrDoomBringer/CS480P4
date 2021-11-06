@@ -26,12 +26,20 @@
             "type": "python",
             "request": "launch",
             "program": "autograder.py",
-            "args": ["-q", "q${input:param1}"]
+            "args": ["-q", "q${input:questionNumber}"]
+        },
+        {
+            "name": "AUTOGRADE noGraphics",
+            "cwd": "${workspaceFolder}/tracking/",
+            "type": "python",
+            "request": "launch",
+            "program": "autograder.py",
+            "args": ["-q", "q${input:questionNumber}" ,"--no-graphics"]
         }
     ],
     "inputs": [
         {
-            "id": "param1",
+            "id": "questionNumber",
             "description": "Question Number",
             "default": "1",
             "type": "promptString"

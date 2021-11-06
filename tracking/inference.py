@@ -58,7 +58,8 @@ class DiscreteDistribution(dict):
         distTotal = self.total()
         itemList = list(self.items())
         newList = []
-
+        if distTotal == 0:
+            return
         for item in itemList:
             key = item[0]
             val = item[1] / distTotal
@@ -192,9 +193,9 @@ class InferenceModule:
 
     def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailPosition):
 
-        print("noisyDistance = ", noisyDistance, "pacmanPosition = ", pacmanPosition, " ghostPosition = ", ghostPosition, " jailPosition = ", jailPosition)
+        # print("noisyDistance = ", noisyDistance, "pacmanPosition = ", pacmanPosition, " ghostPosition = ", ghostPosition, " jailPosition = ", jailPosition)
         inJail = (ghostPosition == jailPosition)
-        #print("in jail? ", inJail)
+        # print("in jail? ", inJail)
         if (noisyDistance == None) and (inJail == False):
             return 0.0
         if (noisyDistance != None) and (inJail == True):
@@ -315,8 +316,14 @@ class ExactInference(InferenceModule):
         position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
-
+        # Inference equation: P(GhostIsActuallyThere | Observation, PacPosition, PotentialGhostPosition, JailPosition)
+        new_beliefs = DiscreteDistribution()
+        self.beliefs.normalize()
+        for ghost_position in self.allPositions:
+            pac_position = gameState.getPacmanPosition()
+            jail_position = self.getJailPosition()
+            new_beliefs[ghost_position] = self.beliefs[ghost_position] * self.getObservationProb(observation, pac_position, ghost_position, jail_position)
+        self.beliefs = new_beliefs
         self.beliefs.normalize()
 
     def elapseTime(self, gameState):
