@@ -6,11 +6,35 @@
     "configurations": [
         {
             "name": "Busters",
-            "cwd": "${workspaceFolder}/reinforcement/",
+            "cwd": "${workspaceFolder}/tracking/",
             "type": "python",
             "request": "launch",
             "program": "busters.py",
             "args": []
+        },
+        {
+            "name": "AUTOGRADE Default",
+            "cwd": "${workspaceFolder}/tracking/",
+            "type": "python",
+            "request": "launch",
+            "program": "autograder.py",
+            "args": []
+        },
+        {
+            "name": "AUTOGRADE",
+            "cwd": "${workspaceFolder}/tracking/",
+            "type": "python",
+            "request": "launch",
+            "program": "autograder.py",
+            "args": ["-q", "q${input:param1}"]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "param1",
+            "description": "Question Number",
+            "default": "1",
+            "type": "promptString"
         }
     ]
 }

@@ -10,7 +10,9 @@
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
-
+#
+# Emmanuel Steiner Robles
+# Rachel Gillespie
 
 import itertools
 import random
@@ -53,6 +55,19 @@ class DiscreteDistribution(dict):
         return float(sum(self.values()))
 
     def normalize(self):
+        distTotal = self.total()
+        itemList = list(self.items())
+        newList = []
+
+        for item in itemList:
+            key = item[0]
+            val = item[1] / distTotal
+            newList.append({key : val})
+        
+        for pair in newList:
+            self.update(pair)
+
+
         """
         Normalize the distribution such that the total value of all keys sums
         to 1. The ratio of values for all keys will remain the same. In the case
@@ -75,9 +90,18 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+#        raiseNotDefined()
 
     def sample(self):
+        self.normalize()
+
+        randNum = random.random()
+        count = 0
+        for item in list(self.items()):
+            count += item[1]
+            if randNum < count:
+                return item[0]
+
         """
         Draw a random sample from the distribution and return the key, weighted
         by the values associated with each key.
@@ -99,9 +123,11 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
 
 
+
+#for x in range(20):
+#    print(disc.sample())
 class InferenceModule:
     """
     An inference module tracks a belief distribution over a ghost's location.
@@ -165,11 +191,23 @@ class InferenceModule:
         return self.getPositionDistributionHelper(gameState, pos, index, agent)
 
     def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailPosition):
+
+        print("noisyDistance = ", noisyDistance, "pacmanPosition = ", pacmanPosition, " ghostPosition = ", ghostPosition, " jailPosition = ", jailPosition)
+        inJail = (ghostPosition == jailPosition)
+        #print("in jail? ", inJail)
+        if (noisyDistance == None) and (inJail == False):
+            return 0.0
+        if (noisyDistance != None) and (inJail == True):
+            return 0.0
+        if (noisyDistance == None) and (inJail == True):
+            return 1.0
+        trueDistance = manhattanDistance(pacmanPosition, ghostPosition)
+        return busters.getObservationProbability(noisyDistance, trueDistance)
         """
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        #raiseNotDefined()
 
     def setGhostPosition(self, gameState, ghostPosition, index):
         """
