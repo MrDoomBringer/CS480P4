@@ -14,7 +14,7 @@
 # Emmanuel Steiner Robles
 # Rachel Gillespie
 
-import util
+import util 
 from game import Agent
 from game import Directions
 from keyboardAgents import KeyboardAgent
@@ -106,6 +106,7 @@ class BustersAgent:
 
     def chooseAction(self, gameState):
         "By default, a BustersAgent just stops.  This should be overridden."
+
         return Directions.STOP
 
 class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
@@ -146,3 +147,38 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
+
+        closestGhost = self.chooseGhost(livingGhostPositionDistributions, pacmanPosition)
+
+        bestMove = None 
+        bestDistance = float('inf')
+
+        for action in legal:
+            successorPosition = Actions.getSuccessor(pacmanPosition, action)
+            distance = self.distancer.getDistance(successorPosition, closestGhost)
+            if distance < bestDistance: 
+                bestDistance = distance
+                bestMove = action 
+        return bestMove
+
+        return Directions.STOP
+
+
+
+    def chooseGhost(self, livingGhostPositionDistributions, pacPos):
+        
+        """
+        Returns position of closest ghost!
+        """
+        
+        closestGhost = None 
+        # i didn't know how to do infinitiy without math lib so i figured that number would be big enough
+        distToGhost = 10000000000000
+
+        for dist in livingGhostPositionDistributions:
+            likelySpot = dist.argMax()
+            ghostDist = self.distancer.getDistance(pacPos, likelySpot)
+            if ghostDist < distToGhost:
+                distToGhost = ghostDist 
+                closestGhost = likelySpot 
+        return closestGhost
