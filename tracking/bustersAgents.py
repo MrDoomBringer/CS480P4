@@ -161,10 +161,6 @@ class GreedyBustersAgent(BustersAgent):
                 bestMove = action 
         return bestMove
 
-        return Directions.STOP
-
-
-
     def chooseGhost(self, livingGhostPositionDistributions, pacPos):
         
         """
