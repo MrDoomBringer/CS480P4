@@ -515,7 +515,31 @@ class JointParticleFilter(ParticleFilter):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        newer_particles = []
+        for i in range(self.numGhosts):
+            weight_dist = DiscreteDistribution()
+            pac_position = gameState.getPacmanPosition()
+            jail_position = self.getJailPosition(i)
+            for particle in self.particles:
+                if particle[i] not in weight_dist:
+                    weight_dist[particle[i]] = 0
+                weight_dist[particle[i]] += self.getObservationProb(observation[i], pac_position, particle[i], jail_position)
+            weight_dist.normalize()
+            if weight_dist.total() == 0:
+                self.initializeUniformly(gameState)
+                return
+            new_particles = []
+            for i in range(self.numParticles):
+                new_particle = weight_dist.sample()
+                new_particles.append(new_particle)
+            newer_particles.append(new_particles)
+        self.particles = []
+        for i in range(self.numParticles):
+            temp_list = []
+            for j in range(self.numGhosts):
+                temp_list.append(newer_particles[j][i])
+            self.particles.append(tuple(temp_list))
+        #raiseNotDefined()
 
     def elapseTime(self, gameState):
         """
